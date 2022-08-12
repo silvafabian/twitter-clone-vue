@@ -3,33 +3,109 @@
     <q-header bordered class="bg-white text-black">
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
-
         <q-toolbar-title class="text-weight-bold">
-          Twitter Clone Vue
+          <span class="gt-sm"> Twitter Clone Vue </span>
+          <q-icon
+            class="q-pa-md lt-md header-icon"
+            name="fas fa-dove"
+            size="sm"
+            color="primary"
+          />
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" :width="283" bordered>
+    <q-drawer
+      show-if-above
+      v-model="leftDrawerOpen"
+      side="left"
+      :width="283"
+      bordered
+    >
       <q-icon name="fas fa-dove" size="lg" color="primary" class="q-pa-md" />
       <q-list>
         <q-item clickable v-ripple to="/">
           <q-item-section avatar>
             <q-icon name="home" size="md" />
           </q-item-section>
-          <q-item-section class="text-h6 text-weight-bold">Home</q-item-section>
+          <q-item-section class="text-h6 text-weight-bold">
+            Home
+          </q-item-section>
         </q-item>
         <q-item clickable v-ripple to="/about">
           <q-item-section avatar>
             <q-icon name="help" size="md" />
           </q-item-section>
-        <q-item-section class="text-h6 text-weight-bold">About</q-item-section>
+          <q-item-section class="text-h6 text-weight-bold">
+            About
+          </q-item-section>
         </q-item>
       </q-list>
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
-      <!-- drawer content -->
+    <q-drawer v-model="rightDrawerOpen" side="right" bordered show-if-above>
+      <q-input
+        class="q-ma-md"
+        placeholder="Search Vue Twitter"
+        dense
+        outlined
+        rounded
+      >
+        <template v-slot:prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+      <q-list separator padding>
+        <q-item class="q-pa-md">
+          <q-item-section>
+            <q-item-label overline class="text-grey">Education</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something Amazing Happened</q-item-label
+            >
+            <q-item-label caption>
+              Secondary line text. Lorem ipsum dolor sit amet, consectetur
+              adipiscit elit.
+            </q-item-label>
+          </q-item-section>
+
+          <q-item-section side top>
+            <q-item-label caption>5 min ago</q-item-label>
+          </q-item-section>
+        </q-item>
+
+        <q-item class="q-pa-md">
+          <q-item-section>
+            <q-item-label overline class="text-grey">Education</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something Amazing Happened</q-item-label
+            >
+            <q-item-label caption>
+              Secondary line text. Lorem ipsum dolor sit amet, consectetur
+              adipiscit elit.
+            </q-item-label>
+          </q-item-section>
+
+          <q-item-section side top>
+            <q-item-label caption>5 min ago</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item class="q-pa-md">
+          <q-item-section>
+            <q-item-label overline class="text-grey">Education</q-item-label>
+            <q-item-label class="text-weight-bold"
+              >Something Amazing Happened</q-item-label
+            >
+            <q-item-label caption>
+              Secondary line text. Lorem ipsum dolor sit amet, consectetur
+              adipiscit elit.
+            </q-item-label>
+          </q-item-section>
+
+          <q-item-section side top>
+            <q-item-label caption>5 min ago</q-item-label>
+          </q-item-section>
+        </q-item>
+      </q-list>
     </q-drawer>
 
     <q-page-container>
@@ -60,3 +136,11 @@ export default {
   },
 };
 </script>
+
+<style lang="sass">
+.header-icon
+  position: absolute
+  bottom: 0
+  left: 50%
+  transform: translateX(-50%)
+</style>
