@@ -34,8 +34,12 @@
 
     <q-separator size="10px" color="grey-2" class="divider" />
 
-    <q-list>
-      <q-item class="q-py-md">
+    <q-list separator>
+      <q-item 
+        v-for="tweet in tweets"
+        :key="tweet.date"
+        class="q-py-md"
+      >
         <q-item-section avatar top>
           <q-avatar>
             <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
@@ -48,10 +52,7 @@
             <span class="text-grey-7"> @fabiansilva </span>
           </q-item-label>
           <q-item-label class="tweet-content text-body1">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-            tempore minus ipsum suscipit excepturi. Consectetur veritatis illo
-            quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus
-            quia rem? Minus harum magni cupiditate!
+            {{ tweet.content }}
           </q-item-label>
           <div class="tweet-icons row justify-between q-mt-sm">
             <q-btn flat round color="grey" icon="far fa-comment" size="sm" />
@@ -61,7 +62,7 @@
           </div>
         </q-item-section>
 
-        <q-item-section side top> 1 min ago </q-item-section>
+        <q-item-section side top> {{ relativeDate(tweet.date) }} </q-item-section>
       </q-item>
 
       <q-separator inset="item" />
@@ -71,14 +72,32 @@
 
 <script>
 import { defineComponent } from "vue";
+import { formatDistance } from 'date-fns'
 
 export default defineComponent({
   name: "PageHome",
   data() {
     return {
       newTwitContent: "",
+      tweets: [
+        {
+          content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
+          date: 1660587090139,
+        },
+        {
+          content:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
+          date: 1660587115454,
+        },
+      ],
     };
   },
+  methods: {
+    relativeDate(value) {
+      return formatDistance(value, new Date())
+    }
+  }
 });
 </script>
 
