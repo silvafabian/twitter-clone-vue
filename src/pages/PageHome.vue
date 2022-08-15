@@ -37,8 +37,8 @@
 
     <q-list separator>
       <q-item 
-        v-for="tweet in tweets"
-        :key="tweet.date"
+        v-for="tweet in tweets" 
+        :key="tweet.date" 
         class="q-py-md"
       >
         <q-item-section avatar top>
@@ -59,11 +59,13 @@
             <q-btn flat round color="grey" icon="far fa-comment" size="sm" />
             <q-btn flat round color="grey" icon="fas fa-retweet" size="sm" />
             <q-btn flat round color="grey" icon="far fa-heart" size="sm" />
-            <q-btn flat round color="grey" icon="fas fa-trash" size="sm" />
+            <q-btn @click="deleteTweet(tweet)" flat round color="grey" icon="fas fa-trash" size="sm" />
           </div>
         </q-item-section>
 
-        <q-item-section side top> {{ relativeDate(tweet.date) }} </q-item-section>
+        <q-item-section side top>
+          {{ relativeDate(tweet.date) }}
+        </q-item-section>
       </q-item>
 
       <q-separator inset="item" />
@@ -73,7 +75,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { formatDistance } from 'date-fns'
+import { formatDistance } from "date-fns";
 
 export default defineComponent({
   name: "PageHome",
@@ -96,16 +98,21 @@ export default defineComponent({
   },
   methods: {
     relativeDate(value) {
-      return formatDistance(value, new Date())
+      return formatDistance(value, new Date());
     },
     addNewTweet() {
       let newTweet = {
         content: this.newTwitContent,
-        date: Date.now()
-      }
-      this.tweets.unshift(newTweet)
+        date: Date.now(),
+      };
+      this.tweets.unshift(newTweet);
+    },
+    deleteTweet(tweet){
+      let dateToDelete = tweet.date
+      let index = this.tweets.findIndex(tweet => tweet.date === dateToDelete)
+      this.tweets.splice(index, 1)
     }
-  }
+  },
 });
 </script>
 
