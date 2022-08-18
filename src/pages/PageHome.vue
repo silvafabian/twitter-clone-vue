@@ -42,7 +42,7 @@
           enter-active-class="animated fadeIn slow"
           leave-active-class="animated fadeOut"
         >
-          <q-item v-for="tweet in tweets" :key="tweet.date" class="q-py-md">
+          <q-item v-for="tweet in tweets" :key="tweet.id" class="q-py-md">
             <q-item-section avatar top>
               <q-avatar>
                 <img src="https://cdn.quasar.dev/img/avatar5.jpg" />
@@ -104,6 +104,8 @@ import {
   onSnapshot,
   orderBy,
   addDoc,
+  deleteDoc,
+  doc
 } from "firebase/firestore";
 import { defineComponent } from "vue";
 import { formatDistance } from "date-fns";
@@ -113,18 +115,7 @@ export default defineComponent({
   data() {
     return {
       newTwitContent: "",
-      tweets: [
-        // {
-        //   content:
-        //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
-        //   date: 1660587090139,
-        // },
-        // {
-        //   content:
-        //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
-        //   date: 1660587115454,
-        // },
-      ],
+      tweets: [],
     };
   },
   methods: {
@@ -137,14 +128,10 @@ export default defineComponent({
         date: Date.now(),
       };
       const docRef = await addDoc(collection(db, "tweets"), newTweet);
-      console.log("Document written with ID: ", docRef.id);
-      // this.tweets.unshift(newTweet);
       this.newTwitContent = "";
     },
-    deleteTweet(tweet) {
-      let dateToDelete = tweet.date;
-      let index = this.tweets.findIndex((tweet) => tweet.date === dateToDelete);
-      this.tweets.splice(index, 1);
+    async deleteTweet(tweet) {
+      await deleteDoc(doc(db, "tweets", tweet.id));
     },
   },
   mounted() {
@@ -152,16 +139,17 @@ export default defineComponent({
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let tweetChanged = change.doc.data();
+        tweetChanged.id = change.doc.id
 
         if (change.type === "added") {
-          console.log("New tweet: ", tweetChanged);
           this.tweets.unshift(tweetChanged);
         }
         if (change.type === "modified") {
           console.log("Modified tweet: ", tweetChanged);
         }
         if (change.type === "removed") {
-          console.log("Removed tweet: ", tweetChanged);
+          let index = this.tweets.findIndex(tweet => tweet.id === tweetChanged.id)
+          this.tweets.splice(index, 1)
         }
       });
     });
