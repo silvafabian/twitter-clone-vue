@@ -98,7 +98,13 @@
 
 <script>
 import db from "../boot/firebase.js";
-import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
+import {
+  collection,
+  query,
+  onSnapshot,
+  orderBy,
+  addDoc,
+} from "firebase/firestore";
 import { defineComponent } from "vue";
 import { formatDistance } from "date-fns";
 
@@ -125,12 +131,14 @@ export default defineComponent({
     relativeDate(value) {
       return formatDistance(value, new Date());
     },
-    addNewTweet() {
+    async addNewTweet() {
       let newTweet = {
         content: this.newTwitContent,
         date: Date.now(),
       };
-      this.tweets.unshift(newTweet);
+      const docRef = await addDoc(collection(db, "tweets"), newTweet);
+      console.log("Document written with ID: ", docRef.id);
+      // this.tweets.unshift(newTweet);
       this.newTwitContent = "";
     },
     deleteTweet(tweet) {
@@ -140,14 +148,14 @@ export default defineComponent({
     },
   },
   mounted() {
-    const q = query(collection(db, "tweets"), orderBy('date'))
+    const q = query(collection(db, "tweets"), orderBy("date"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
-        let tweetChanged = change.doc.data()
+        let tweetChanged = change.doc.data();
 
         if (change.type === "added") {
           console.log("New tweet: ", tweetChanged);
-          this.tweets.unshift(tweetChanged)
+          this.tweets.unshift(tweetChanged);
         }
         if (change.type === "modified") {
           console.log("Modified tweet: ", tweetChanged);
