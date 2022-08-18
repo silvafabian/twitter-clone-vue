@@ -24,7 +24,7 @@
     >
       <q-icon name="fas fa-dove" size="lg" color="primary" class="q-pa-md" />
       <q-list>
-        <q-item to="/" exact clickable v-ripple >
+        <q-item to="/" exact clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="home" size="md" />
           </q-item-section>
@@ -32,7 +32,7 @@
             Home
           </q-item-section>
         </q-item>
-        <q-item to="/about" exact clickable v-ripple >
+        <q-item to="/about" exact clickable v-ripple>
           <q-item-section avatar>
             <q-icon name="help" size="md" />
           </q-item-section>
@@ -109,7 +109,11 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>
