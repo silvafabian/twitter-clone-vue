@@ -76,7 +76,14 @@
                   icon="fas fa-retweet"
                   size="sm"
                 />
-                <q-btn flat round color="grey" icon="far fa-heart" size="sm" />
+                <q-btn
+                @click="toggleLiked(tweet)"
+                  :color="tweet.liked ? 'pink' : 'grey'"
+                  :icon="tweet.liked ? 'fas fa-heart' : 'far fa-heart'"
+                  size="sm"
+                  flat
+                  round
+                />
                 <q-btn
                   @click="deleteTweet(tweet)"
                   flat
@@ -99,13 +106,14 @@
 <script>
 import db from "../boot/firebase.js";
 import {
+  doc,
   collection,
   query,
   onSnapshot,
   orderBy,
   addDoc,
   deleteDoc,
-  doc
+  updateDoc,
 } from "firebase/firestore";
 import { defineComponent } from "vue";
 import { formatDistance } from "date-fns";
@@ -115,7 +123,20 @@ export default defineComponent({
   data() {
     return {
       newTwitContent: "",
-      tweets: [],
+      tweets: [
+        // {
+        //   id: 'ID1',
+        //   content: 'this is one tweet',
+        //   date: 1660854409397,
+        //   liked: false
+        // },
+        // {
+        //   id: 'ID2',
+        //   content: 'this is two tweet',
+        //   date: 1660854409400,
+        //   liked: true
+        // },
+      ],
     };
   },
   methods: {
@@ -126,12 +147,18 @@ export default defineComponent({
       let newTweet = {
         content: this.newTwitContent,
         date: Date.now(),
+        liked: false,
       };
       const docRef = await addDoc(collection(db, "tweets"), newTweet);
       this.newTwitContent = "";
     },
     async deleteTweet(tweet) {
       await deleteDoc(doc(db, "tweets", tweet.id));
+    },
+    toggleLiked(tweet) {
+      updateDoc(doc(db, "tweets", tweet.id),{
+        liked: !tweet.liked
+      });
     },
   },
   mounted() {
@@ -145,7 +172,8 @@ export default defineComponent({
           this.tweets.unshift(tweetChanged);
         }
         if (change.type === "modified") {
-          console.log("Modified tweet: ", tweetChanged);
+          let index = this.tweets.findIndex(tweet => tweet.id === tweetChanged.id)
+          Object.assign(this.tweets[index], tweetChanged)
         }
         if (change.type === "removed") {
           let index = this.tweets.findIndex(tweet => tweet.id === tweetChanged.id)
