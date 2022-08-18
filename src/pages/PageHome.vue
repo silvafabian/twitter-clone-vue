@@ -97,6 +97,8 @@
 </template>
 
 <script>
+import db from "../boot/firebase.js";
+import { collection, query, onSnapshot, orderBy } from "firebase/firestore";
 import { defineComponent } from "vue";
 import { formatDistance } from "date-fns";
 
@@ -106,16 +108,16 @@ export default defineComponent({
     return {
       newTwitContent: "",
       tweets: [
-        {
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
-          date: 1660587090139,
-        },
-        {
-          content:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
-          date: 1660587115454,
-        },
+        // {
+        //   content:
+        //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
+        //   date: 1660587090139,
+        // },
+        // {
+        //   content:
+        //     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio tempore minus ipsum suscipit excepturi. Consectetur veritatis illo quidem reiciendis omnis voluptatibus obcaecati earum necessitatibus quia rem? Minus harum magni cupiditate!",
+        //   date: 1660587115454,
+        // },
       ],
     };
   },
@@ -136,6 +138,25 @@ export default defineComponent({
       let index = this.tweets.findIndex((tweet) => tweet.date === dateToDelete);
       this.tweets.splice(index, 1);
     },
+  },
+  mounted() {
+    const q = query(collection(db, "tweets"), orderBy('date'))
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let tweetChanged = change.doc.data()
+
+        if (change.type === "added") {
+          console.log("New tweet: ", tweetChanged);
+          this.tweets.unshift(tweetChanged)
+        }
+        if (change.type === "modified") {
+          console.log("Modified tweet: ", tweetChanged);
+        }
+        if (change.type === "removed") {
+          console.log("Removed tweet: ", tweetChanged);
+        }
+      });
+    });
   },
 });
 </script>
